@@ -1,11 +1,5 @@
 general:
   feedback: "https://No-feedback-site.yet"
-reprodudes:
-  one: "https://chatgpt.com/share/67d7f136-400c-800e-8104-aa822b5405fb"
-  two: "https://chatgpt.com/share/67d7f081-67e4-800e-9410-07beec2b0093"
-  three: "https://chatgpt.com/share/67d7f0ee-a090-800e-a97e-f2c487a13a0b"
-  four: "https://chatgpt.com/share/67d7f11c-4cb0-800e-9464-4eb708851473"
-  five: "https://chatgpt.com/share/67d7f1a1-bad8-800e-a941-a788c01347ee"
 addinfos:
   start: "https://en.wikipedia.org/wiki/Information"
   rmarkdown: "https://rmarkdown.rstudio.com/"
@@ -19,8 +13,6 @@ logsign:
   githublog: "https://github.com/login"
   positsign: "https://login.posit.cloud/register"
   positlog: "https://login.posit.cloud/register"
-  chatgptsign: "https://chat.openai.com/auth/login"
-  chatgptlog: "https://chat.openai.com/auth/login"
 suggestions:
   rmarkdown: "https://bookdown.org/yihui/rmarkdown/"
   git: "https://git-scm.com/docs/gittutorial"

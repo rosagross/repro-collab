@@ -1,7 +1,8 @@
-module.exports = async function ({ github, context, core, env }) {
-    const UpOctokit = github.constructor;
-    const up = new UpOctokit({ auth: env.UPSTREAM_TOKEN });     // upstream PAT
-    const x  = new UpOctokit({ auth: env.CROSSREPO_TOKEN });    // cross-repo PAT
+module.exports = async function ({ github, context, core, env, getOctokit }) {
+    // getOctokit is injected by actions/github-script >= v9; fall back to the client's constructor
+    const makeClient = getOctokit || ((auth) => new github.constructor({ auth }));
+    const up = makeClient(env.UPSTREAM_TOKEN);     // upstream PAT
+    const x  = makeClient(env.CROSSREPO_TOKEN);    // cross-repo PAT
     
     const [forkOwner, forkRepo] = (process.env.FORK_REPO || '').split('/');
     if (!forkOwner || !forkRepo) {
@@ -126,8 +127,8 @@ module.exports = async function ({ github, context, core, env }) {
         '3. Click the **"+"** button next to the line.',
         '4. Click the **"Add a Suggestion"** button next to the line. Look for this symbol:',
         '<picture>',
-        '  <source srcset="https://raw.githubusercontent.com/aaronpeikert/repro-collab/main/assets/addASuggestionSymbol.png" media="(prefers-color-scheme: dark)">',
-        '  <img src="https://raw.githubusercontent.com/aaronpeikert/repro-collab/main/assets/addASuggestionSymbol_white.png" alt="add Suggestion symbol">',
+        `  <source srcset="https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/assets/addASuggestionSymbol.png" media="(prefers-color-scheme: dark)">`,
+        `  <img src="https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/assets/addASuggestionSymbol_white.png" alt="add Suggestion symbol">`,
         '</picture>',
         '\n',
         '5. Click the green "Start a review" button.',
@@ -136,7 +137,7 @@ module.exports = async function ({ github, context, core, env }) {
         '',
         `**Afterwards:** Once you've suggested your change, return to ${context.payload.issue.html_url} and comment \`/done 6\` to continue`,
         '',
-        '<img src="https://raw.githubusercontent.com/aaronpeikert/repro-collab/main/assets/make_suggestion.gif" alt="Make Suggestion GIF">'
+        `<img src="https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/assets/make_suggestion.gif" alt="Make Suggestion GIF">`
     ].filter(Boolean);
     
     const { data: pr } = await x.rest.pulls.create({

@@ -70,7 +70,7 @@ module.exports = async function ({ github, context, core, env }) {
         '',
         '### 🟡 Medium Version: Time Travel Using Command Line in Codespaces',
         '',
-        '**Prerequisites:** Complete Milestone 12 (GitHub Codespaces) first!',
+        '**Prerequisites:** Complete Milestone 11 (GitHub Codespaces) first!',
         '',
         '**Step 1: Set up your Codespace**',
         '1. Go to your fork repository',

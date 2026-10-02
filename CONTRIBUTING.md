@@ -25,7 +25,7 @@ You need **two different GitHub PATs** with specific permissions:
 ##### 1. Cross-Repository PAT (`GH_PAT_CROSSREPO`)
 
 - **Type**: Classic Personal Access Token
-- **Required Scope**: `public_repo`
+- **Required Scopes**: `public_repo`, `read:project`
 - **Purpose**: Allows the workshop automation to create issues and comments in the main repository when someone forks your repository
 
 ##### 2. Upstream PAT (`GH_PAT_UPSTREAM`)
@@ -44,6 +44,8 @@ You need **two different GitHub PATs** with specific permissions:
 3. Add them as repository secrets in your fork:
    - `GH_PAT_CROSSREPO` (classic token)
    - `GH_PAT_UPSTREAM` (fine-grained token)
+
+If you already have a `GH_PAT_CROSSREPO` secret, create a new classic token with both required scopes and replace the existing repository secret.
 
 #### Activate GitHub Actions
 

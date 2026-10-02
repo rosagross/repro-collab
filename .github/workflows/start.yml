@@ -4,12 +4,15 @@ name: Fork Triggered Welcome Issue
 on:
   fork:
 
+permissions:
+  contents: read
+
 jobs:
   welcome:
     runs-on: ubuntu-latest
     steps:
       - name: Welcome to the workshop, let’s get started!
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           script: |
@@ -83,25 +86,7 @@ jobs:
               labels: ['newfork']
             });
 
-            // 3) Unsubscribe the token owner (bot/workflow user) from the issue notifications using REST API
-            try {
-              // Use REST API to unsubscribe from the issue
-              await github.rest.activity.deleteThreadSubscription({
-                thread_id: issue.data.id
-              });
-              
-              console.log(`Successfully unsubscribed token owner from issue #${issue.data.number}`);
-              
-            } catch (error) {
-              // Check if it's a 304 (not modified) which means already unsubscribed
-              if (error.status === 304) {
-                console.log(`Token owner was already unsubscribed from issue #${issue.data.number}`);
-              } else {
-                console.log(`Note: Could not unsubscribe token owner from notifications.`);
-                console.log(`Error: ${error.message}`);
-              }
-              // Continue execution even if unsubscribe fails
-            }
+            // 3) The token owner is already unsubscribed from the issue by helpers.createIssue (GraphQL)
 
             // 4) Post the detailed "Next step" instructions as a comment
 

@@ -5,43 +5,42 @@ on:
   schedule:
     # Automatically run on every day at 07:00
     - cron:  '0 7 * * *'
-    
+
+permissions: {}
+
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        secret_name: 
+        secret_name:
           - GH_PAT_UPSTREAM
           - GH_PAT_CROSSREPO
       fail-fast: false  # Continue testing other secrets even if one fails
     steps:
       - name: Check Personal Access Token - ${{ matrix.secret_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets[matrix.secret_name] }}
+          PAT: ${{ secrets[matrix.secret_name] }}
+          SECRET_NAME: ${{ matrix.secret_name }}
         run: |
-          echo "Checking GitHub Token (${{ matrix.secret_name }}) for expiry and/or access"
-          
-          if [ -z "$GITHUB_TOKEN" ]; then
-            echo "Error: Secret ${{ matrix.secret_name }} is not defined or empty"
+          echo "Checking GitHub Token ($SECRET_NAME) for expiry and/or access"
+
+          if [ -z "$PAT" ]; then
+            echo "Error: Secret $SECRET_NAME is not defined or empty"
             exit 1
           fi
-          
-          # prepend some arguments, but pass on whatever arguments this script was called with
-          output="$(curl -XGET \
-          --write '\n%{http_code}\n'  \
-          --silent \
-          --fail -H 'Content-Type:application/json' \
-          -H 'Accept:application/json' \
-          -H 'authorization: token '"${{ secrets.GH_PAT_CROSSREPO }}" https://api.github.com/repos/aaronpeikert/repro-collab \
-          )"
-          return_code=$?
-          if [ 0 -eq $return_code ]; then
-              # remove the "http_code" line from the end of the output, and parse it
-              echo "Yay! Your personal access code is not expired and has access to this repo"
+
+          status="$(curl --silent --output response.json --write-out '%{http_code}' \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            -H "Authorization: Bearer $PAT" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}")"
+
+          if [ "$status" = "200" ]; then
+            echo "Yay! Your personal access token is not expired and has access to this repo"
           else
-              echo "Boo! Your personal access code is expired or has no access"
-             # comment the next line if you don't want to see the HTTP status code and return messages from GitHub
-             echo "Failure: code=$output"
-             exit 1
+            echo "Boo! Your personal access token is expired or has no access"
+            echo "Failure: HTTP status=$status"
+            cat response.json
+            exit 1
           fi
