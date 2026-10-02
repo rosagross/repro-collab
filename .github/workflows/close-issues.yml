@@ -32,13 +32,17 @@ jobs:
       issues: write
     steps:
       - name: Close all issues with newfork label
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          ADD_COMMENT: ${{ inputs.add_comment }}
+          COMMENT_TEXT: ${{ inputs.comment_text }}
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const DRY_RUN = ${{ inputs.dry_run }} === true;
-            const ADD_COMMENT = ${{ inputs.add_comment }} === true;
-            const COMMENT_TEXT = `${{ inputs.comment_text }}`;
+            const DRY_RUN = process.env.DRY_RUN === 'true';
+            const ADD_COMMENT = process.env.ADD_COMMENT === 'true';
+            const COMMENT_TEXT = process.env.COMMENT_TEXT;
             
             console.log(`Starting ${DRY_RUN ? 'DRY RUN' : 'LIVE RUN'} to close newfork issues`);
             console.log(`Add comment: ${ADD_COMMENT}`);
@@ -47,43 +51,18 @@ jobs:
             }
             console.log('---');
             
-            let page = 1;
-            let hasMore = true;
-            let totalIssues = 0;
             let closedCount = 0;
-            const issuesToClose = [];
             
-            // Fetch all open issues with the 'newfork' label
-            while (hasMore) {
-              try {
-                const response = await github.rest.issues.listForRepo({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: 'newfork',
-                  state: 'open',
-                  per_page: 100,
-                  page: page
-                });
-                
-                if (response.data.length === 0) {
-                  hasMore = false;
-                } else {
-                  issuesToClose.push(...response.data);
-                  page++;
-                }
-                
-                // GitHub API rate limiting protection
-                if (page > 10) {
-                  console.log('Reached page limit (1000 issues). Run workflow again if more issues remain.');
-                  hasMore = false;
-                }
-              } catch (error) {
-                console.error(`Error fetching issues on page ${page}: ${error.message}`);
-                hasMore = false;
-              }
-            }
+            // Fetch all open issues with the 'newfork' label (paginated)
+            const issuesToClose = await github.paginate(github.rest.issues.listForRepo, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'newfork',
+              state: 'open',
+              per_page: 100
+            });
             
-            totalIssues = issuesToClose.length;
+            const totalIssues = issuesToClose.length;
             console.log(`Found ${totalIssues} open issue(s) with 'newfork' label\n`);
             
             if (totalIssues === 0) {

@@ -1,7 +1,8 @@
-module.exports = async function ({ github, context, core, env }) {
-    const UpOctokit = github.constructor;
-    const up = new UpOctokit({ auth: env.UPSTREAM_TOKEN });     // upstream PAT
-    const x  = new UpOctokit({ auth: env.CROSSREPO_TOKEN });    // cross-repo PAT
+module.exports = async function ({ github, context, core, env, getOctokit }) {
+    // getOctokit is injected by actions/github-script >= v9; fall back to the client's constructor
+    const makeClient = getOctokit || ((auth) => new github.constructor({ auth }));
+    const up = makeClient(env.UPSTREAM_TOKEN);     // upstream PAT
+    const x  = makeClient(env.CROSSREPO_TOKEN);    // cross-repo PAT
     
     const [forkOwner, forkRepo] = (process.env.FORK_REPO || '').split('/');
     if (!forkOwner || !forkRepo) {

@@ -3,22 +3,28 @@ module.exports = async function ({ github, context, core, env }) {
 
     const errors = [];
 
-    // Check if a project exists in the fork repository
+    // Check if a project (Projects v2) is linked to the fork repository.
+    // The classic Projects REST API has been sunset, so GraphQL is required.
+    // Only public projects are visible to our token, hence the reminder below.
     let projectExists = false;
     let projectCount = 0;
 
     try {
-        const { data: projects } = await github.rest.projects.listForRepo({
-            owner,
-            repo,
-            state: 'open'
-        });
+        const result = await github.graphql(
+            `query($owner: String!, $repo: String!) {
+                repository(owner: $owner, name: $repo) {
+                    projectsV2(first: 20) { totalCount nodes { title public closed } }
+                }
+            }`,
+            { owner, repo }
+        );
 
+        const projects = result.repository.projectsV2.nodes.filter(p => !p.closed);
         projectCount = projects.length;
         projectExists = projectCount > 0;
 
         if (!projectExists) {
-            errors.push('❌ No GitHub Project found in your repository.');
+            errors.push('❌ No open, public GitHub Project linked to your repository was found. Create it from the **Projects** tab of your fork and make sure its visibility is **Public** (project **Settings** → **Visibility**).');
         }
     } catch (error) {
         errors.push(`❌ Error checking for projects: ${error.message}`);
