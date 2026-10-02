@@ -23,6 +23,7 @@ module.exports = async function ({ github, context, core, env }) {
         '4. Choose **"Board"** template (Kanban-style)',
         '5. Name it: `Preregistration Improvements`',
         '6. Click **"Create project"**',
+        '7. Open the project **Settings** (⚙️ or the "..." menu) and set **Visibility** to **Public**, otherwise the automatic check cannot see your project.',
         '',
         '**Step 2: Add existing issues to your project**',
         '1. In your project board, you\'ll see columns like "Todo", "In Progress", "Done"',

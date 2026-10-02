@@ -89,7 +89,7 @@ module.exports = async function ({ github, context, core, env }) {
             '2. Add your data files to the data folder.',
             '3. Add, commit & push.',
             '',
-            '<img src="https://raw.githubusercontent.com/aaronpeikert/repro-collab/main/assets/data_PR.gif" alt="Upload data files GIF">',
+            `<img src="https://raw.githubusercontent.com/${context.repo.owner}/${context.repo.repo}/main/assets/data_PR.gif" alt="Upload data files GIF">`,
             '',
             '### Step 4: Close this issue',
             `Once both have uploaded the data file (2 files total), Person B returns to ${preregistrationUrl} and comments \`/done 9\` to continue.`,
