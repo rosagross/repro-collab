@@ -40,6 +40,8 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            // Pin REST API version (default 2022-11-28 is deprecated)
+            github.hook.before('request', (o) => { o.headers['x-github-api-version'] = '2026-03-10'; });
             const DRY_RUN = process.env.DRY_RUN === 'true';
             const ADD_COMMENT = process.env.ADD_COMMENT === 'true';
             const COMMENT_TEXT = process.env.COMMENT_TEXT;

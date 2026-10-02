@@ -16,6 +16,9 @@ jobs:
         with:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           script: |
+            // Pin REST API version (default 2022-11-28 is deprecated)
+            github.hook.before('request', (o) => { o.headers['x-github-api-version'] = '2026-03-10'; });
+
             // Load helpers
             let githubHelpers;
             const { data } = await github.rest.repos.getContent({

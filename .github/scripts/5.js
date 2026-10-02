@@ -1,6 +1,7 @@
 module.exports = async function ({ github, context, core, env, getOctokit }) {
     // getOctokit is injected by actions/github-script >= v9; fall back to the client's constructor
-    const makeClient = getOctokit || ((auth) => new github.constructor({ auth }));
+    const pinApiVersion = require('./api-version.js');
+    const makeClient = (auth) => pinApiVersion(getOctokit ? getOctokit(auth) : new github.constructor({ auth }));
     const up = makeClient(env.UPSTREAM_TOKEN);     // upstream PAT
     const x  = makeClient(env.CROSSREPO_TOKEN);    // cross-repo PAT
     
