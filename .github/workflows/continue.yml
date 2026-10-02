@@ -38,6 +38,7 @@ jobs:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           result-encoding: string
           script: |
+            require('./.github/scripts/api-version.js')(github);
             const run = require('./.github/scripts/parse.js');
             return await run({ github, context, core, env: process.env });
       
@@ -54,6 +55,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           script: |
+            require('./.github/scripts/api-version.js')(github);
             const milestone = process.env.MILESTONE;
             const scriptName = `${milestone}`;
             console.log(`Running ${scriptName}.js...`);
@@ -68,6 +70,7 @@ jobs:
         with:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           script: |
+            require('./.github/scripts/api-version.js')(github);
             // Run prep scripts for milestones 10-19
             for (let milestone = 10; milestone <= 19; milestone++) {
               const scriptName = `${milestone}prep`;
@@ -106,5 +109,6 @@ jobs:
         with:
           github-token: ${{ secrets.GH_PAT_CROSSREPO }}
           script: |
+            require('./.github/scripts/api-version.js')(github);
             const run = require('./.github/scripts/fail.js');
             return await run({ github, context, core, env: process.env });
