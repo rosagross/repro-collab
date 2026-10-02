@@ -16,21 +16,6 @@ generate_additionalinfo <- function(links, title, text, direction) {
   return(html)
 }
 
-generate_reprodudes <- function(links, title, text) {
-  template <- '
-<div class="infoboxgpt" onclick="window.open(\'{{links}}\', \'_blank\')">
-  <h2 class="infobox-titlegpt">{{title}}</h2>
-  <p class="infobox-contentgpt">{{text}}</p>
-</div>
-  '
-  
-  values <- list(links = links, title = title, text = text)
-  
-  html <- whisker.render(template, values)
-  
-  return(html)
-}
-
 
 library(whisker)
 
