@@ -1,7 +1,7 @@
 --- 
 title: "Reproducible Research in Collaboration"
 subtitle: "Writing Academic Texts on GitHub Together"
-author: "Aaron Peikert & Hannes Diemerling"
+author: "Aaron Peikert & Hannes Diemerling & Annabel Büchner"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book
@@ -21,7 +21,7 @@ source("functions.R")
 
 # About {-}
 
-We ([Aaron Peikert](mailto:peikert@mpib-berlin.mpg.de) and [Hannes Diemerling](mailto:diemerling@mpib-berlin.mpg.de)) work at the Formal Methods project at the Max Planck Institute for Human Development.
+I ([Aaron Peikert](mailto:peikert@mpib-berlin.mpg.de) work at the Formal Methods project at the Max Planck Institute for Human Development.
 Do no hesitate to contact us via email if you have any questions!
 
 Anabel Büchner gave us the motivation to tackle this process and contributed greatly.
